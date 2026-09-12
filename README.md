@@ -1,6 +1,6 @@
 # Titanic Survival Classifier
 
-A baseline machine learning project predicting passenger survival on the Titanic using Scikit-learn.
+A machine learning project predicting passenger survival on the Titanic using Scikit-learn, iterated from a baseline model to a tuned, feature-engineered model.
 
 ## What This Project Does
 
@@ -9,36 +9,41 @@ This is Step 1 of a portfolio pipeline moving from Scikit-learn (data cleaning a
 ## Dataset
 
 - Source: [Kaggle - Titanic: Machine Learning from Disaster](https://www.kaggle.com/competitions/titanic)
-- Features used: Passenger class, sex, age, siblings/spouses aboard, parents/children aboard, fare, port of embarkation
 
 ## Approach
 
-1. **Handle missing values**: Filled missing `Age` values with the median and missing `Embarked` values with the mode using `SimpleImputer` and `fillna`.
-2. **Encode categorical features**: Converted `Sex` and `Embarked` into numeric form with `LabelEncoder`.
-3. **Split the data**: 80/20 train-test split using `train_test_split`.
-4. **Train the model**: A `RandomForestClassifier` from Scikit-learn.
-5. **Evaluate**: Measured performance with `accuracy_score` and `f1_score`.
+### Baseline Model
+1. Filled missing `Age` (median) and `Embarked` (mode) values with `SimpleImputer` and `fillna`.
+2. Encoded `Sex` and `Embarked` with `LabelEncoder`.
+3. Trained a `RandomForestClassifier` on Pclass, Sex, Age, SibSp, Parch, Fare, and Embarked.
 
-## Results
+### Tuned Model (Iteration 2)
+1. Engineered a `Title` feature extracted from passenger names (Mr, Mrs, Miss, Master, Rare), one-hot encoded instead of label-encoded to avoid implying a false rank order.
+2. Engineered a `FamilySize` feature (SibSp + Parch + 1) to capture the non-linear survival penalty for both solo travelers and large families.
+3. Swapped to `GradientBoostingClassifier`, tuned with `GridSearchCV` across `n_estimators`, `max_depth`, and `learning_rate` using 5-fold cross-validation.
 
-| Metric | Score |
-|---|---|
-| Accuracy | 0.8212 |
-| F1-Score | 0.7746 |
+## Results: Before vs After
 
-**What this means:** Accuracy measures overall correct predictions. F1-Score balances precision and recall, which matters here because survival outcomes in the dataset are imbalanced (more passengers died than survived). The F1-Score being a bit lower than accuracy shows the model is slightly weaker at catching every actual survivor than the raw accuracy number suggests on its own.
+| Metric | Baseline (Random Forest) | Tuned (Gradient Boosting) | Change |
+|---|---|---|---|
+| Accuracy | 0.8212 | 0.8324 | +1.12 pts |
+| F1-Score | 0.7746 | 0.7917 | +1.71 pts |
 
-## What I'd Do Differently Next
+**Best hyperparameters found:** `learning_rate=0.1`, `max_depth=4`, `n_estimators=100`
 
-- Engineer new features such as title extracted from passenger name, and family size from `SibSp` + `Parch`.
-- Try a `GradientBoostingClassifier` or tuned hyperparameters to close the gap between accuracy and F1.
-- Add cross-validation instead of a single train-test split for a more stable performance estimate.
+## What Changed The Score
+
+An earlier attempt at this same feature engineering, using `LabelEncoder` on `Title` instead of one-hot encoding, and untuned Gradient Boosting defaults, actually performed *worse* than the baseline (Accuracy 0.8101, F1 0.7571). Two fixes reversed that:
+
+- **One-hot encoding Title** removed a false numeric ranking that ordinal encoding had implied between titles.
+- **GridSearchCV tuning** found a deeper tree structure (max_depth=4 vs. the untuned default of 3) that was needed for the model to actually pick up on the Title/FamilySize signal without overfitting.
+
+This is the real lesson: feature engineering only pays off when paired with correct encoding and proper tuning. Swapping algorithms or adding features blindly can make results worse before it makes them better.
 
 ## Tools Used
 
-- Python
-- Pandas
-- Scikit-learn (`SimpleImputer`, `LabelEncoder`, `train_test_split`, `RandomForestClassifier`, `accuracy_score`, `f1_score`)
+- Python, Pandas
+- Scikit-learn (`SimpleImputer`, `LabelEncoder`, `pd.get_dummies`, `train_test_split`, `RandomForestClassifier`, `GradientBoostingClassifier`, `GridSearchCV`, `accuracy_score`, `f1_score`)
 
 ## Next in This Series
 
