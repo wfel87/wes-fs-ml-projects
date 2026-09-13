@@ -29,14 +29,14 @@ This is Step 1 of a portfolio pipeline moving from Scikit-learn (data cleaning a
 | Accuracy | 0.8212 | 0.8324 | +1.12 pts |
 | F1-Score | 0.7746 | 0.7917 | +1.71 pts |
 
-**Best hyperparameters found:** `learning_rate=0.1`, `max_depth=4`, `n_estimators=100`
+Best hyperparameters found: `learning_rate=0.1`, `max_depth=4`, `n_estimators=100`
 
 ## What Changed The Score
 
 An earlier attempt at this same feature engineering, using `LabelEncoder` on `Title` instead of one-hot encoding, and untuned Gradient Boosting defaults, actually performed *worse* than the baseline (Accuracy 0.8101, F1 0.7571). Two fixes reversed that:
 
-- **One-hot encoding Title** removed a false numeric ranking that ordinal encoding had implied between titles.
-- **GridSearchCV tuning** found a deeper tree structure (max_depth=4 vs. the untuned default of 3) that was needed for the model to actually pick up on the Title/FamilySize signal without overfitting.
+- One-hot encoding Title removed a false numeric ranking that ordinal encoding had implied between titles.
+- GridSearchCV tuning found a deeper tree structure (max_depth=4 vs. the untuned default of 3) that was needed for the model to actually pick up on the Title/FamilySize signal without overfitting.
 
 This is the real lesson: feature engineering only pays off when paired with correct encoding and proper tuning. Swapping algorithms or adding features blindly can make results worse before it makes them better.
 

@@ -32,7 +32,7 @@ This is Step 2 of a portfolio pipeline, bridging from tabular data (Step 1: Tita
 | Spam Precision | 0.98 | 0.96 | -0.02 |
 | Spam Recall | 0.81 | 0.91 | +0.10 |
 
-**Best hyperparameters found:** `C=10`, `class_weight="balanced"`
+Best hyperparameters found: `C=10`, `class_weight="balanced"`
 
 ## What Changed The Score
 
