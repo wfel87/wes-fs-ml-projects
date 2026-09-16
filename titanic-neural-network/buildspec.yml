@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - pip install -r titanic-neural-network/requirements.txt
+  build:
+    commands:
+      - pytest titanic-neural-network/tests/ -v
+      - python titanic-neural-network/titanic_neural_network.py --output model_artifacts/titanic_nn.pt
+  post_build:
+    commands:
+      - echo "Build completed on $(date)"
+
+artifacts:
+  files:
+    - model_artifacts/titanic_nn.pt
+  discard-paths: yes

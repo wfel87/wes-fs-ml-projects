@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - pip install -r sms-spam-classifier/requirements.txt
+  build:
+    commands:
+      - pytest sms-spam-classifier/tests/ -v
+      - python sms-spam-classifier/sms_spam_classifier.py --output model_artifacts/spam_model.joblib
+  post_build:
+    commands:
+      - echo "Build completed on $(date)"
+
+artifacts:
+  files:
+    - model_artifacts/spam_model.joblib
+  discard-paths: yes

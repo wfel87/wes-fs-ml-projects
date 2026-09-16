@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install --upgrade pip
+      - pip install -r credit-card-fraud-detection/requirements.txt
+  build:
+    commands:
+      - echo "Running unit tests for fraud detection model"
+      - pytest credit-card-fraud-detection/tests/ -v
+      - echo "Training model artifact"
+      - python credit-card-fraud-detection/fraud_detection.py --output model_artifacts/fraud_model.joblib
+  post_build:
+    commands:
+      - echo "Build completed on $(date)"
+
+artifacts:
+  files:
+    - model_artifacts/fraud_model.joblib
+  discard-paths: yes
